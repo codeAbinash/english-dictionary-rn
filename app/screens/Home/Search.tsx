@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
    ActivityIndicator,
    Appearance,
@@ -16,6 +16,7 @@ import icons from '../../resources/icons/icons';
 import images from '../../resources/images/images';
 import { debounce } from '../../util/methods';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useIsFocused } from '@react-navigation/native';
 
 
 const isDarkMode = Appearance.getColorScheme() === 'dark'
@@ -25,27 +26,62 @@ let lastSearchedWord: string = ''
 
 const { width, height } = Dimensions.get('window');
 
-const Search = () => {
+const Search = ({ navigation, route }: any) => {
    const inputRef = useRef<any>(null)
    const [searchedWord, setSearchedWord] = useState('')
    const [searchedResult, setSearchedResult] = useState<any>(null)
+   const [isFavoriteWord, setIsFavoriteWord] = useState(false)
+   // const [isExternalSearch, setIsExternalSearch] = useState(false)
+   const [externalSearchedWord, setExternalSearchedWord] = useState(route.params?.search || '')
+   const [favWords, setFavWords] = useState<any>([])
+   const isFocusedScreen = useIsFocused()
 
 
-   async function searchWord(e: any) {
-      let val = e.nativeEvent.text
+   useEffect(() => {
+      setExternalSearchedWord(route.params?.search || '')
+      if (externalSearchedWord && isFocusedScreen) {
+         search(externalSearchedWord)
+      }
+   }, [isFocusedScreen, externalSearchedWord])
 
-      console.log(val, lastSearchedWord)
-      let word = lastSearchedWord = val.trim()
+   useEffect(() => {
+      async function checkFavWords() {
+         setFavWords(JSON.parse(await AsyncStorage.getItem('favorites') || '[]'))
+      }
+      checkFavWords()
+   }, [searchedWord])
 
 
-      setSearchedWord(word)
+   async function toggleFavorite() {
+      console.log('Toggle Favorite', searchedWord, isFavoriteWord)
+      setIsFavoriteWord(!isFavoriteWord)
+
+      if (isFavoriteWord)
+         favWords.splice(favWords.indexOf(searchedWord), 1)
+      else
+         favWords.push(searchedWord)
+
+      setFavWords(favWords)
+      AsyncStorage.setItem('favorites', JSON.stringify(favWords))
+   }
+
+   async function search(word: string) {
+      word = lastSearchedWord = word.trim()
+
+
       if (!word) {
          setSearchedResult(null)
+         setSearchedWord('')
          return
       }
 
+      favWords.includes(word) ? setIsFavoriteWord(true) : setIsFavoriteWord(false)
+
       // Set the status to loading
       setSearchedResult(null)
+
+      setSearchedWord(word)
+      inputRef.current.setNativeProps({ text: word })
 
       let controller = new AbortController()
       let signal = controller.signal
@@ -82,7 +118,23 @@ const Search = () => {
             console.log(err)
          })
       }
+
    }
+
+
+   async function searchWord(e: any) {
+      let val = e.nativeEvent.text
+      await search(val)
+   }
+
+   useEffect(() => {
+
+      return () => {
+         lastSearchedWord = ''
+      }
+
+
+   }, [searchWord])
 
 
 
@@ -90,7 +142,7 @@ const Search = () => {
    return (
       <View className='flex-1 bg-white dark:bg-black'>
          <View className='p-4 pb-3'>
-            <View className='bg-[#99999922]  flex-row items-center' style={{
+            <View className='bg-[#99999933]  flex-row items-center' style={{
                paddingTop: 1, paddingBottom: 1, paddingLeft: 18, borderRadius: 15
             }}>
                <View>
@@ -98,14 +150,14 @@ const Search = () => {
                </View>
                <View className='pl-[10] flex-1 pr-2'>
                   <TextInput className='text-black dark:text-white text-base'
-                     ref={inputRef} placeholder='Search any word' autoFocus={true}
+                     ref={inputRef} placeholder='Search any word' autoFocus={externalSearchedWord ? false : true}
                      // onChangeText={debounce(searchWord, 300)}
                      onSubmitEditing={searchWord}
                   />
                </View>
             </View>
          </View>
-         <View className='flex-1' style={{}}>
+         <View className='flex-1' >
             {
                searchedWord ?
                   searchedResult === null ?
@@ -114,13 +166,10 @@ const Search = () => {
                         <Text className='pt-5'>Searching for '{searchedWord}'</Text>
                      </View>
                      :
-                     SearchResultUI(searchedResult, searchedWord)
+                     SearchResultUI(searchedResult, searchedWord, search, toggleFavorite, isFavoriteWord)
                   :
                   <View className='flex-1 justify-center items-center pb-20'>
-                     <Image source={images.start} style={{
-                        width: '90%', height: '60%'
-                        , resizeMode: 'contain',
-                     }} />
+                     {/* <Image source={images.start} style={{width: '90%', height: '60%', resizeMode: 'contain',}} /> */}
                      <Text className='text-base mt-5'>Search any word</Text>
                   </View>
             }
@@ -130,7 +179,7 @@ const Search = () => {
 }
 
 
-function SearchResultUI(data: any, word: any) {
+function SearchResultUI(data: any, word: any, search: Function, toggleFavorite: Function, isFavoriteWord: boolean) {
    if (data.length === 0)
       return <View className='flex-1 justify-center items-center pb-20'>
          <Image source={images.not_found} style={{ width: '80%', height: '50%', resizeMode: 'contain' }} />
@@ -149,8 +198,8 @@ function SearchResultUI(data: any, word: any) {
                         <Text className='text-lg text-black dark:text-white'>{result.phonetic || '...'}</Text>
                      </View>
                      <View className='flex-row mt-2'>
-                        <TouchableOpacity>
-                           <Image source={icons.heart_outline} style={{ height: 22, width: 22, resizeMode: 'contain', tintColor: colors.get('accent') }} />
+                        <TouchableOpacity className='p-3' onPress={() => toggleFavorite()}>
+                           <Image source={isFavoriteWord ? icons.heart_filled : icons.heart_outline} style={{ height: 22, width: 22, resizeMode: 'contain', tintColor: colors.get('accent') }} />
                         </TouchableOpacity>
                      </View>
                   </View>
@@ -158,7 +207,7 @@ function SearchResultUI(data: any, word: any) {
                   {
                      result.meanings.map((meanings: any, index: number) => {
                         return <View key={index}>
-                           <View className='bg-[#88888822] h-2'></View>
+                           <View className='bg-[#99999933] h-3'></View>
                            <View className='p-5 pt-4'>
                               <View className='flex-row'>
                                  <Text className='text-lg italic' style={{ color: colors.get('accent') }}>{result.word} : </Text>
@@ -167,30 +216,30 @@ function SearchResultUI(data: any, word: any) {
                               <View>
                                  {
                                     meanings.definitions.map((definitions: any, index: number) => {
-                                       return <View className='pt-4' key={index}>
-                                          <View className='flex-row'>
-                                             <Text className='text-lg text-black dark:text-white font-bold'>{index + 1}. </Text>
-                                             <Text className='text-lg text-black dark:text-white'> {definitions.definition}</Text>
+                                       return <View className='pt-6' key={index}>
+                                          <View className=''>
+                                             {/* <Text className='text-lg text-black dark:text-white font-bold'>{index + 1}. </Text> */}
+                                             <Text className='text-lg text-black dark:text-white'> {'\u2022  ' + definitions.definition}</Text>
                                           </View>
                                           {  // Check if the example is available
                                              definitions.example &&
-                                             <View className='pl-3'>
-                                                <Text className='text-base font-bold italic'>Example : </Text>
-                                                <Text className='text-lg pl-4 italic'>{definitions.example}</Text>
+                                             <View className=''>
+                                                {/* <Text className='text-base font-bold italic'>Example : </Text> */}
+                                                <Text className='text-lg pl-4 italic'>e.g.  {definitions.example}</Text>
                                              </View>
                                           }
                                           { // Check if the synonyms are available
                                              definitions.synonyms && definitions.synonyms.length > 0 &&
                                              <View className='mt-1 pl-3'>
                                                 <Text className='text-base font-bold italic'>synonyms : </Text>
-                                                <WordList words={definitions.synonyms} />
+                                                <WordList words={definitions.synonyms} search={search} />
                                              </View>
                                           }
                                           { // Check if the synonyms are available
                                              definitions.antonyms && definitions.antonyms.length > 0 &&
                                              <View className='mt-1 pl-3'>
                                                 <Text className='text-base font-bold italic'>antonyms : </Text>
-                                                <WordList words={definitions.antonyms} />
+                                                <WordList words={definitions.antonyms} search={search} />
                                              </View>
                                           }
                                        </View>
@@ -203,7 +252,7 @@ function SearchResultUI(data: any, word: any) {
                                     meanings.synonyms && meanings.synonyms.length > 0 &&
                                     <View className='mt-3'>
                                        <Text className='text-lg font-bold italic'>Synonyms : </Text>
-                                       <WordList words={meanings.synonyms} />
+                                       <WordList words={meanings.synonyms} search={search} />
                                     </View>
                                  }
                               </View>
@@ -212,7 +261,7 @@ function SearchResultUI(data: any, word: any) {
                                  meanings.antonyms && meanings.antonyms.length > 0 &&
                                  <View className='mt-3'>
                                     <Text className='text-lg font-bold italic'>Antonyms : </Text>
-                                    <WordList words={meanings.antonyms} />
+                                    <WordList words={meanings.antonyms} search={search} />
                                  </View>
                               }
                            </View>
@@ -221,7 +270,7 @@ function SearchResultUI(data: any, word: any) {
                   }
                </View>
 
-               <View className='bg-[#88888822] h-4'></View>
+               <View className='bg-[#99999933] h-4'></View>
             </View>
          })
       }
@@ -229,7 +278,7 @@ function SearchResultUI(data: any, word: any) {
    </ScrollView>
 }
 
-function WordList({ words }: any) {
+function WordList({ words, search }: { words: any, search: Function }) {
    return <View className='flex-row pt-1 flex-wrap' style={{
       rowGap: 7,
       columnGap: 7
@@ -237,9 +286,9 @@ function WordList({ words }: any) {
       {
          words.map((word: any, index: number) => {
             return <TouchableOpacity key={index} onPress={() => {
-               console.log(word)
+               search(word)
             }}>
-               <Text className='text-base bg-[#99999922] p-1 pb-2 pl-4 pr-4 rounded-full'>{word}</Text>
+               <Text className='text-base bg-[#99999933] p-1 pb-2 pl-4 pr-4 rounded-full'>{word}</Text>
             </TouchableOpacity>
          })
       }

@@ -18,7 +18,7 @@ import Search from './Search';
 const isDarkMode = Appearance.getColorScheme() === 'dark';
 
 
-const Home = () => {
+const Home = ({ navigation }: any) => {
 
   async function changeBarColors() {
     await changeNavigationBarColor(isDarkMode ? 'black' : 'white', !isDarkMode, true);
@@ -34,6 +34,14 @@ const Home = () => {
       <Text className='text-lg text-center' style={{
         color: colors.get('accent'),
       }}>Go to search section to search words</Text>
+      <TouchableOpacity onPress={() => {
+        navigation.navigate('Search', {
+          search: 'Dictionary'
+        })
+      }}>
+        <Text style={{ fontSize: 18, color: colors.get('accent'), }}>Search 'Dictionary'</Text>
+      </TouchableOpacity>
+
     </View>
   )
 }
