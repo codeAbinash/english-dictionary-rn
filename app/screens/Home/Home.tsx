@@ -14,6 +14,8 @@ import colors from '../../colors/colors';
 import changeNavigationBarColor from 'react-native-navigation-bar-color';
 import Search from './Search';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useIsFocused } from '@react-navigation/native';
+
 
 
 const isDarkMode = Appearance.getColorScheme() === 'dark';
@@ -21,16 +23,22 @@ const isDarkMode = Appearance.getColorScheme() === 'dark';
 
 const Home = ({ navigation }: any) => {
   const [randomWord, setRandomWord] = React.useState('');
+  const isFocusedScreen = useIsFocused()
+
 
   useEffect(() => {
-    loadRandomWord()
-  }, [])
+    if (isFocusedScreen)
+      loadRandomWord()
+  }, [isFocusedScreen])
 
 
 
   async function loadRandomWord() {
     const favWords = JSON.parse(await AsyncStorage.getItem('favorites') || '[]');
-    setRandomWord(favWords[Math.floor(Math.random() * favWords.length)])
+    if (favWords.length > 0)
+      setRandomWord(favWords[Math.floor(Math.random() * favWords.length)])
+    // return setRandomWord('');
+    // else
   }
 
   async function changeBarColors() {
@@ -46,14 +54,19 @@ const Home = ({ navigation }: any) => {
       <View>
         <Text className='text-xl font-bold text-black dark:text-white'>Random Word to learn</Text>
         <TouchableOpacity className='bg-[#99999933] mt-5 rounded-3xl overflow-hidden' activeOpacity={0.6}
-          onPress={() => navigation.navigate('Search', { search: randomWord })}
+          onPress={randomWord ? () => navigation.navigate('Search', { search: randomWord }) : () => { }}
         >
           <View className='h-44 justify-center items-center'>
-            <Text className='text-3xl font-bold text-black dark:text-white'>{randomWord}</Text>
+            {
+              !randomWord ? <Text className='text-lg text-black dark:text-white'>Add words to your favorites to see them here</Text>
+                : <Text className='text-3xl font-bold text-black dark:text-white'>{randomWord}</Text>
+            }
           </View>
         </TouchableOpacity>
         <View className='justify-end items-end pt-2 pr-3'>
-          <TouchableOpacity activeOpacity={0.6}>
+          <TouchableOpacity activeOpacity={0.6}
+            onPress={randomWord ? () => navigation.navigate('Search', { search: randomWord }) : () => { }}
+          >
             <Text className='text-base text-black dark:text-white' style={{ color: colors.get('accent'), }}>
               Tap to learn more
             </Text>
