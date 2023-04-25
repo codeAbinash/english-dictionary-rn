@@ -13,12 +13,25 @@ import icons from '../../resources/icons/icons';
 import colors from '../../colors/colors';
 import changeNavigationBarColor from 'react-native-navigation-bar-color';
 import Search from './Search';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const isDarkMode = Appearance.getColorScheme() === 'dark';
 
 
 const Home = ({ navigation }: any) => {
+  const [randomWord, setRandomWord] = React.useState('');
+
+  useEffect(() => {
+    loadRandomWord()
+  }, [])
+
+
+
+  async function loadRandomWord() {
+    const favWords = JSON.parse(await AsyncStorage.getItem('favorites') || '[]');
+    setRandomWord(favWords[Math.floor(Math.random() * favWords.length)])
+  }
 
   async function changeBarColors() {
     await changeNavigationBarColor(isDarkMode ? 'black' : 'white', !isDarkMode, true);
@@ -29,20 +42,28 @@ const Home = ({ navigation }: any) => {
   }, [isDarkMode])
 
   return (
-    <View className='flex-1 justify-center items-center bg-white dark:bg-black p-5 gap-10'>
-      <Text className='text-lg text-center'>Trending Words, Words of the day etc. Features are coming soon.</Text>
-      <Text className='text-lg text-center' style={{
-        color: colors.get('accent'),
-      }}>Go to search section to search words</Text>
-      <TouchableOpacity onPress={() => {
-        navigation.navigate('Search', {
-          search: 'Dictionary'
-        })
-      }}>
-        <Text style={{ fontSize: 18, color: colors.get('accent'), }}>Search 'Dictionary'</Text>
-      </TouchableOpacity>
+    <View className='flex-1 bg-white dark:bg-black p-5 gap-10'>
+      <View>
+        <Text className='text-xl font-bold text-black dark:text-white'>Random Word to learn</Text>
+        <TouchableOpacity className='bg-[#99999933] mt-5 rounded-3xl overflow-hidden' activeOpacity={0.6}
+          onPress={() => navigation.navigate('Search', { search: randomWord })}
+        >
+          <View className='h-44 justify-center items-center'>
+            <Text className='text-3xl font-bold text-black dark:text-white'>{randomWord}</Text>
+          </View>
+        </TouchableOpacity>
+        <View className='justify-end items-end pt-2 pr-3'>
+          <TouchableOpacity activeOpacity={0.6}>
+            <Text className='text-base text-black dark:text-white' style={{ color: colors.get('accent'), }}>
+              Tap to learn more
+            </Text>
+          </TouchableOpacity>
+        </View>
 
-    </View>
+        <Text className='mt-44 text-lg text-center' style={{ color: colors.get('accent') }}>More Features are coming soon</Text>
+
+      </View>
+    </View >
   )
 }
 

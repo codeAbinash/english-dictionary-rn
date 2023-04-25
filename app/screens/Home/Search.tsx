@@ -168,8 +168,9 @@ const Search = ({ navigation, route }: any) => {
                      :
                      SearchResultUI(searchedResult, searchedWord, search, toggleFavorite, isFavoriteWord)
                   :
-                  <View className='flex-1 justify-center items-center pb-20'>
+                  <View className='flex-1 justify-center items-center'>
                      {/* <Image source={images.start} style={{width: '90%', height: '60%', resizeMode: 'contain',}} /> */}
+                     <Image source={icons.search_thin} style={{ width: 55, height: 55, resizeMode: 'contain', tintColor: '#999999' }} />
                      <Text className='text-base mt-5'>Search any word</Text>
                   </View>
             }

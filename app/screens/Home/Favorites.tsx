@@ -54,8 +54,11 @@ const Favorites = ({ navigation }: any) => {
     return <View className='bg-white dark:bg-black flex-1'>
       <View className='p-5 gap-5 bg-white dark:bg-black'>
         <Text className='text-2xl font-bold mt-4 ml-5 text-[#222] dark:text-[#ddd]'>Favorite Words</Text>
-        <View className='h-[90%] justify-center items-center'>
-          <Text className='text-lg'>You don't have any favorite words yet.</Text>
+        <View className='h-[85%] justify-center items-center'>
+          <Image source={icons.favorites} style={{ width: 60, height: 60, resizeMode: 'contain', tintColor: '#999999' }} />
+          <Text className='text-lg mt-7'>
+            No favorite words yet.
+          </Text>
           <Text className='text-sm' style={{ color: colors.get('accent'), marginTop: 5 }}>Tap on the heart icon to add a word to your favorites.</Text>
         </View>
       </View>
@@ -69,13 +72,8 @@ const Favorites = ({ navigation }: any) => {
         <View className='bg-[#99999918] rounded-2xl overflow-hidden grow'>
           {favWords.map((word, index) => {
             return <View className='flex-row justify-between items-center' key={index}
-              style={{
-                // Add a border to the bottom of the item except for the last item
-                borderBottomWidth: index == favWords.length - 1 ? 0 : 1,
-                borderBottomColor: '#99999922'
-              }}
-            >
-              <TouchableOpacity activeOpacity={0.8} onPress={() => { goToSearchScreen(word) }} className='w-[80%] p-4'>
+              style={{ borderBottomWidth: index == favWords.length - 1 ? 0 : 1, borderBottomColor: '#99999922' }}>
+              <TouchableOpacity onPress={() => { goToSearchScreen(word) }} className='w-[80%] p-4'>
                 <Text className='text-lg text-[#222] dark:text-[#ddd]'>{word}</Text>
               </TouchableOpacity>
               <TouchableOpacity className='p-4' onPress={() => removeFromFavorites(word)}>
