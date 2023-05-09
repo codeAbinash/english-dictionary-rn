@@ -3,7 +3,7 @@ import React, {
 } from 'react';
 import {
   Text, View, StatusBar, Appearance,
-  TouchableOpacity, Image,
+  TouchableOpacity, Image, TextInput, NativeEventEmitter,
 } from 'react-native';
 import { NavigationContainer, } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -24,6 +24,8 @@ const isDarkMode = Appearance.getColorScheme() === 'dark';
 const Home = ({ navigation }: any) => {
   const [randomWord, setRandomWord] = React.useState('');
   const isFocusedScreen = useIsFocused()
+  const inputRef = React.useRef(null as any)
+
 
 
   useEffect(() => {
@@ -50,10 +52,30 @@ const Home = ({ navigation }: any) => {
   }, [isDarkMode])
 
   return (
-    <View className='flex-1 bg-white dark:bg-black p-5 gap-10'>
-      <View>
-        <Text className='text-xl font-bold text-black dark:text-white'>Random Word to learn</Text>
-        <TouchableOpacity className='bg-[#99999933] mt-5 rounded-3xl overflow-hidden' activeOpacity={0.6}
+    <View className='flex-1 bg-white dark:bg-black'>
+      <View className='p-4 pb-0'>
+        <View className='bg-[#99999933]  flex-row items-center' style={{
+          paddingTop: 1, paddingBottom: 1, paddingLeft: 18, borderRadius: 15
+        }}>
+          <View>
+            <Image source={icons.search_thin} style={{ resizeMode: 'contain', height: 17, width: 17, tintColor: '#888' }} />
+          </View>
+          <View className='pl-[10] flex-1 pr-2'>
+            <TextInput className='text-black dark:text-white text-base'
+              ref={inputRef} placeholder='Search any word'
+              // onChangeText={debounce(searchWord, 300)}
+              onSubmitEditing={(e: any) => {
+                let val = e.nativeEvent.text
+                if (val.length > 0)
+                  navigation.navigate('Search', { search: val })
+              }}
+            />
+          </View>
+        </View>
+      </View>
+      <View className='p-5'>
+        <Text className='text-lg font-bold text-black dark:text-white'>Check your memory</Text>
+        <TouchableOpacity className='bg-[#99999933] mt-2 rounded-3xl overflow-hidden' activeOpacity={0.6}
           onPress={randomWord ? () => navigation.navigate('Search', { search: randomWord }) : () => { }}
         >
           <View className='h-44 justify-center items-center'>

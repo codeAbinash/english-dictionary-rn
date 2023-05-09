@@ -187,6 +187,15 @@ function SearchResultUI(data: any, word: any, search: Function, toggleFavorite: 
          <Text className='text-base mt-2'>No result found for '{word}'</Text>
       </View>
 
+   function getPhoneticsText(result: any) {
+      const phonetics = result.phonetics
+
+      for (let i = 0; i < phonetics.length; i++) {
+         if (phonetics[i].text)
+            return phonetics[i].text
+      }
+   }
+
    return <ScrollView>
       {
          data.map((result: any, index: number) => {
@@ -196,7 +205,7 @@ function SearchResultUI(data: any, word: any, search: Function, toggleFavorite: 
                      <View>
                         <Text className='text-black dark:text-white text-3xl font-bold'>{result.word}</Text>
                         {/* <Text className='text-lg'>{result.phonetic || 'Phonetics is not available'}</Text> */}
-                        <Text className='text-lg text-black dark:text-white'>{result.phonetic || '...'}</Text>
+                        <Text className='text-lg text-black dark:text-white'>{result.phonetic || getPhoneticsText(result) || '...'}</Text>
                      </View>
                      <View className='flex-row mt-2'>
                         <TouchableOpacity className='p-3' onPress={() => toggleFavorite()}>
@@ -208,7 +217,7 @@ function SearchResultUI(data: any, word: any, search: Function, toggleFavorite: 
                   {
                      result.meanings.map((meanings: any, index: number) => {
                         return <View key={index}>
-                           <View className='bg-[#99999933] h-3'></View>
+                           <View className='bg-[#99999933] dark:bg-[#181818] h-3'></View>
                            <View className='p-5 pt-4'>
                               <View className='flex-row'>
                                  <Text className='text-lg italic' style={{ color: colors.get('accent') }}>{result.word} : </Text>
@@ -271,7 +280,7 @@ function SearchResultUI(data: any, word: any, search: Function, toggleFavorite: 
                   }
                </View>
 
-               <View className='bg-[#99999933] h-4'></View>
+               <View className='bg-[#99999933] dark:bg-[#181818] h-4'></View>
             </View>
          })
       }
