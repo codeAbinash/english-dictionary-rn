@@ -55,7 +55,7 @@ const Favorites = ({ navigation }: any) => {
       <View className='p-5 gap-5 bg-white dark:bg-black'>
         <Text className='text-2xl font-bold mt-4 ml-5 text-[#222] dark:text-[#ddd]'>Favorite Words</Text>
         <View className='h-[85%] justify-center items-center'>
-          <Image source={icons.favorites} style={{ width: 60, height: 60, resizeMode: 'contain', tintColor: '#999999' }} />
+          <Image source={icons.favorites} style={{ width: 55, height: 55, resizeMode: 'contain', tintColor: '#999999' }} />
           <Text className='text-lg mt-7'>
             No favorite words yet.
           </Text>

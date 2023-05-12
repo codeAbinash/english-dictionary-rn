@@ -103,8 +103,8 @@ android {
         applicationId "com.englishdictionary.rn"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 2
-        versionName "2.0"
+        versionCode 3
+        versionName "2.0.1"
     }
 
     splits {

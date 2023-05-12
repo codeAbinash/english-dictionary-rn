@@ -68,7 +68,6 @@ const Search = ({ navigation, route }: any) => {
    async function search(word: string) {
       word = lastSearchedWord = word.trim()
 
-
       if (!word) {
          setSearchedResult(null)
          setSearchedWord('')
@@ -128,12 +127,9 @@ const Search = ({ navigation, route }: any) => {
    }
 
    useEffect(() => {
-
       return () => {
          lastSearchedWord = ''
       }
-
-
    }, [searchWord])
 
 
@@ -203,9 +199,9 @@ function SearchResultUI(data: any, word: any, search: Function, toggleFavorite: 
                <View className=''>
                   <View className='flex-row justify-between items-center p-5'>
                      <View>
-                        <Text className='text-black dark:text-white text-3xl font-bold'>{result.word}</Text>
+                        <Text className='text-black dark:text-white text-3xl font-bold' selectable>{result.word}</Text>
                         {/* <Text className='text-lg'>{result.phonetic || 'Phonetics is not available'}</Text> */}
-                        <Text className='text-lg text-black dark:text-white'>{result.phonetic || getPhoneticsText(result) || '...'}</Text>
+                        <Text selectable className='text-lg text-black dark:text-white'>{result.phonetic || getPhoneticsText(result) || '...'}</Text>
                      </View>
                      <View className='flex-row mt-2'>
                         <TouchableOpacity className='p-3' onPress={() => toggleFavorite()}>
@@ -229,13 +225,13 @@ function SearchResultUI(data: any, word: any, search: Function, toggleFavorite: 
                                        return <View className='pt-6' key={index}>
                                           <View className=''>
                                              {/* <Text className='text-lg text-black dark:text-white font-bold'>{index + 1}. </Text> */}
-                                             <Text className='text-lg text-black dark:text-white'> {'\u2022  ' + definitions.definition}</Text>
+                                             <Text selectable className='text-lg text-black dark:text-white'> {'\u2022  ' + definitions.definition}</Text>
                                           </View>
                                           {  // Check if the example is available
                                              definitions.example &&
                                              <View className=''>
                                                 {/* <Text className='text-base font-bold italic'>Example : </Text> */}
-                                                <Text className='text-lg pl-4 italic'>e.g.  {definitions.example}</Text>
+                                                <Text selectable className='text-lg pl-4 italic'>e.g.  {definitions.example}</Text>
                                              </View>
                                           }
                                           { // Check if the synonyms are available

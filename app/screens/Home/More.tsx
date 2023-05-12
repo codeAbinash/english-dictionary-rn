@@ -83,6 +83,11 @@ const More = ({ navigation }: any) => {
             </TouchableOpacity>
           })}
         </View>
+
+        <Text className='mt-20 text-center text-black dark:text-white'>
+          Made with ❤️ by Abinash
+        </Text>
+
       </View>
     </ScrollView>
   )

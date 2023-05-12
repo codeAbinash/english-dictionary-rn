@@ -73,16 +73,16 @@ const Home = ({ navigation }: any) => {
           </View>
         </View>
       </View>
-      <View className='p-5'>
-        <Text className='text-lg font-bold text-black dark:text-white'>Check your memory</Text>
-        <TouchableOpacity className='bg-[#99999933] mt-2 rounded-3xl overflow-hidden' activeOpacity={0.6}
+      <View className='p-5 pt-4'>
+        <TouchableOpacity className='bg-[#99999933] rounded-3xl overflow-hidden' activeOpacity={0.6}
           onPress={randomWord ? () => navigation.navigate('Search', { search: randomWord }) : () => { }}
         >
           <View className='h-44 justify-center items-center'>
             {
-              !randomWord ? <Text className='text-lg text-black dark:text-white'>Add words to your favorites to see them here</Text>
+              !randomWord ? <Text className='text-lg text-black dark:text-white text-center'>{"Add words to your favorites\n to see them here"}</Text>
                 : <Text className='text-3xl font-bold text-black dark:text-white'>{randomWord}</Text>
             }
+            <Text className='text-sm font-normal text-center text-[#999999cc]'>Check your memory</Text>
           </View>
         </TouchableOpacity>
         <View className='justify-end items-end pt-2 pr-3'>
@@ -98,6 +98,7 @@ const Home = ({ navigation }: any) => {
         <Text className='mt-44 text-lg text-center' style={{ color: colors.get('accent') }}>More Features are coming soon</Text>
 
       </View>
+
     </View >
   )
 }
