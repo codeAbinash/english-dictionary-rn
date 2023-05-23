@@ -105,6 +105,8 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 4
         versionName "2.1.0"
+        archivesBaseName = "Word_Sense-$versionName"
+        // project.ext.set("archivesBaseName", "YourAppName-" + versionName);
     }
 
     splits {
