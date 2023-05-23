@@ -18,6 +18,7 @@ const icons = {
    github : require('./src/github.png'),
    // contact : require('./src/contact.png'),
    email : require('./src/email.png'),
+   telegram : require('./src/telegram.png'),
 }
 
 export default icons;

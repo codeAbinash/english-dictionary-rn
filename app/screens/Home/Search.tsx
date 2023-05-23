@@ -59,7 +59,7 @@ const Search = ({ navigation, route }: any) => {
       if (isFavoriteWord)
          favWords.splice(favWords.indexOf(searchedWord), 1)
       else
-         favWords.push(searchedWord)
+         favWords.unshift(searchedWord)
 
       setFavWords(favWords)
       AsyncStorage.setItem('favorites', JSON.stringify(favWords))
