@@ -1,18 +1,17 @@
-# Word Sense :  English Dictionary
+# Word Sense : English Dictionary
 
 ![Release Date](https://img.shields.io/github/release-date/codeabinash/localdb.js?color=limegreen)
 ![Languages](https://img.shields.io/github/languages/top/codeabinash/english-dictionary-rn?color=yellow)
 ![Tag](https://img.shields.io/github/tag/codeabinash/english-dictionary-rn?color=limegreen)
 ![Release Version](https://img.shields.io/github/v/release/codeabinash/english-dictionary-rn?color=limegreen)
 
-```com.englishdictionary.rn```
+`com.englishdictionary.rn`
 
 ![English Dictionary](https://codeAbinash.github.io/english-dictionary-rn/app_info/feature_graphic.png)
 
-
 ## Download
-Download the latest version of English Dictionary [here](https://github.com/codeAbinash/english-dictionary-rn/releases/latest).
 
+Download the latest version of English Dictionary [here](https://github.com/codeAbinash/english-dictionary-rn/releases/latest).
 
 ### Word Sense : Comprehensive, user-friendly app. Lookup definitions, synonyms, antonyms, pronunciations & examples. Perfect for students & professionals.
 
@@ -28,8 +27,8 @@ The app also provides synonyms, antonyms, and usage examples for each word searc
 
 Overall, Word Sense is a comprehensive and versatile mobile application that offers users a wide range of features and tools to improve their English language skills. With its user-friendly interface and extensive database of words and definitions, it is the perfect tool for anyone who wants to expand their vocabulary and become more fluent in the English language.
 
-
 ## Download The App
+
 <a href='https://play.google.com/store/apps/details?id=com.englishdictionary.rn'>
 <img width="200px" alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png'/>
 </a>

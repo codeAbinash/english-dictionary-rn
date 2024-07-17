@@ -1,5 +1,6 @@
 # English Dictionary
-```com.englishdictionary.rn```
+
+`com.englishdictionary.rn`
 
 ### English Dictionary: Comprehensive, user-friendly app. Lookup definitions, synonyms, antonyms, pronunciations & examples. Perfect for students & professionals.
 
